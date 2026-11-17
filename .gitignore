@@ -1,1 +1,7 @@
 refs/
+backend/group-service/.env.example
+
+# Fichiers d'editeur et d'extensions VS Code
+.metals/
+.vscode/
+.github/modernize/
