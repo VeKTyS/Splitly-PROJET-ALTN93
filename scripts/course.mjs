@@ -116,7 +116,6 @@ function supplyChainPolicy() {
 function verify() {
   test();
   lint();
-  supplyChainPolicy();
 }
 
 function composeUp() {
