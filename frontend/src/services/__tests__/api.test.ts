@@ -55,7 +55,10 @@ describe('api', () => {
 
   it('serveur injoignable ou en erreur : message lisible, sans detail technique', async () => {
     mockFetch(new TypeError('Failed to fetch'))
-    await expect(api.getGroup(1)).rejects.toMatchObject({ status: 0, message: expect.stringContaining('ne répond pas') })
+    await expect(api.getGroup(1)).rejects.toMatchObject({
+      status: 0,
+      message: expect.stringContaining('ne répond pas'),
+    })
 
     mockFetch(json(500, { detail: 'stack trace interne' }))
     const err = (await api.getGroup(1).catch((e: unknown) => e)) as ApiError

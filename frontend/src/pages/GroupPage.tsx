@@ -25,10 +25,7 @@ import { localStore } from '../services/storage'
 import type { Group, Participant } from '../types'
 
 type LoadState =
-  | { kind: 'loading' }
-  | { kind: 'missing' }
-  | { kind: 'error'; message: string }
-  | { kind: 'ready'; group: Group }
+  { kind: 'loading' } | { kind: 'missing' } | { kind: 'error'; message: string } | { kind: 'ready'; group: Group }
 
 export default function GroupPage() {
   const groupId = Number(useParams().id)
@@ -264,7 +261,11 @@ function Participants({
           Ajouter
         </Button>
       </Stack>
-      {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {error}
+        </Alert>
+      )}
     </Paper>
   )
 }

@@ -110,7 +110,11 @@ function CreateGroupForm({ onCreated }: { onCreated: (group: Group) => void }) {
           Créer
         </Button>
       </Stack>
-      {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {error}
+        </Alert>
+      )}
     </Paper>
   )
 }
@@ -152,7 +156,11 @@ function JoinGroupForm({ onFound }: { onFound: (group: Group) => void }) {
           Rejoindre
         </Button>
       </Stack>
-      {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {error}
+        </Alert>
+      )}
     </Paper>
   )
 }

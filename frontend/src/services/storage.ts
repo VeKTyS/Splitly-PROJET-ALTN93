@@ -34,9 +34,7 @@ export function createLocalStore(storage: KeyValueStorage | null) {
       const parsed: unknown = JSON.parse(read(GROUPS_KEY) ?? '[]')
       if (!Array.isArray(parsed)) return []
       // Donnee venant du navigateur : on ne garde que les entrees bien formees.
-      return parsed.filter(
-        (g): g is KnownGroup => typeof g?.id === 'number' && typeof g?.name === 'string',
-      )
+      return parsed.filter((g): g is KnownGroup => typeof g?.id === 'number' && typeof g?.name === 'string')
     } catch {
       return []
     }

@@ -35,18 +35,16 @@ describe('API /api/groups', () => {
     expect(res.body.inviteCode).toMatch(/^[A-Z2-9]{6}$/);
   });
 
-  it.each([
-    [{ name: '   ' }],
-    [{}],
-    [{ name: 'Coloc', currency: 'euro' }],
-    [{ name: 'x'.repeat(101) }],
-  ])('POST refuse un corps invalide avec 400 : %j', async (body) => {
-    const res = await request(app).post('/api/groups').send(body);
+  it.each([[{ name: '   ' }], [{}], [{ name: 'Coloc', currency: 'euro' }], [{ name: 'x'.repeat(101) }]])(
+    'POST refuse un corps invalide avec 400 : %j',
+    async (body) => {
+      const res = await request(app).post('/api/groups').send(body);
 
-    expect(res.status).toBe(400);
-    expect(res.headers['content-type']).toContain('application/problem+json');
-    expect(res.body.errors.length).toBeGreaterThan(0);
-  });
+      expect(res.status).toBe(400);
+      expect(res.headers['content-type']).toContain('application/problem+json');
+      expect(res.body.errors.length).toBeGreaterThan(0);
+    },
+  );
 
   it('POST avec un JSON mal forme renvoie 400 et pas 500', async () => {
     await request(app).post('/api/groups').set('Content-Type', 'application/json').send('{"name":').expect(400);
