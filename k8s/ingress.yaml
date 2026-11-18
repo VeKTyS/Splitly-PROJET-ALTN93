@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: splitly-ingress
+  namespace: splitly
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: splitly.localhost
+      http:
+        paths:
+          - path: /api/groups
+            pathType: Prefix
+            backend:
+              service:
+                name: group-service
+                port:
+                  number: 8080
