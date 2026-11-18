@@ -26,7 +26,9 @@ export class GroupService {
           createdAt: new Date(),
         });
       } catch (err) {
-        if (!(err instanceof DuplicateInviteCodeError)) throw err;
+        if (!(err instanceof DuplicateInviteCodeError)) {
+          throw err;
+        }
       }
     }
     throw new Error("Impossible de generer un code d'invitation unique");
@@ -34,14 +36,18 @@ export class GroupService {
 
   async get(groupId: number): Promise<Group> {
     const group = await this.repository.findById(groupId);
-    if (!group) throw new NotFoundError(`Groupe ${groupId} introuvable`);
+    if (!group) {
+      throw new NotFoundError(`Groupe ${groupId} introuvable`);
+    }
     return group;
   }
 
   async getByInviteCode(code: string): Promise<Group> {
     // Les codes sont generes en majuscules : on tolere une saisie en minuscules.
     const group = await this.repository.findByInviteCode(code.trim().toUpperCase());
-    if (!group) throw new NotFoundError("Aucun groupe pour ce code d'invitation");
+    if (!group) {
+      throw new NotFoundError("Aucun groupe pour ce code d'invitation");
+    }
     return group;
   }
 

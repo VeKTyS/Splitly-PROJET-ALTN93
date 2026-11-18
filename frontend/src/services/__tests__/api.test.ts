@@ -1,9 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { ApiError, api } from '../api'
+import { api, ApiError } from '../api'
 
 function mockFetch(response: Response | Error) {
   const fn = vi.fn(async () => {
-    if (response instanceof Error) throw response
+    if (response instanceof Error) {
+      throw response
+    }
     return response
   })
   vi.stubGlobal('fetch', fn)

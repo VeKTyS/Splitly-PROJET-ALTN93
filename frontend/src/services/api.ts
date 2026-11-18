@@ -29,8 +29,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new ApiError(0, SERVER_DOWN)
   }
 
-  if (!res.ok) throw new ApiError(res.status, messageFor(res.status))
-  if (res.status === 204) return undefined as T
+  if (!res.ok) {
+    throw new ApiError(res.status, messageFor(res.status))
+  }
+  if (res.status === 204) {
+    return undefined as T
+  }
   return (await res.json()) as T
 }
 
@@ -39,9 +43,15 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
  * Les cas metier (code inconnu, groupe disparu) sont geres par chaque ecran grace au status.
  */
 function messageFor(status: number): string {
-  if (status === 400) return 'Vérifie les informations saisies.'
-  if (status === 404) return 'Introuvable.'
-  if (status >= 500) return SERVER_DOWN
+  if (status === 400) {
+    return 'Vérifie les informations saisies.'
+  }
+  if (status === 404) {
+    return 'Introuvable.'
+  }
+  if (status >= 500) {
+    return SERVER_DOWN
+  }
   return 'Une erreur est survenue.'
 }
 

@@ -78,14 +78,18 @@ export class InMemoryGroupRepository implements GroupRepository {
   /** Version synchrone, utilisable dans create() sans casser l'atomicite. */
   private findGroupByInviteCode(code: string): Group | undefined {
     for (const group of this.groups.values()) {
-      if (group.inviteCode === code) return group;
+      if (group.inviteCode === code) {
+        return group;
+      }
     }
     return undefined;
   }
 
   async addParticipant(groupId: number, name: string): Promise<Participant> {
     const group = this.groups.get(groupId);
-    if (!group) throw new Error(`Groupe ${groupId} absent du repository`);
+    if (!group) {
+      throw new Error(`Groupe ${groupId} absent du repository`);
+    }
     const participant: Participant = { id: this.nextParticipantId++, name };
     group.participants.push(participant);
     return { ...participant };
@@ -93,9 +97,13 @@ export class InMemoryGroupRepository implements GroupRepository {
 
   async removeParticipant(groupId: number, participantId: number): Promise<boolean> {
     const group = this.groups.get(groupId);
-    if (!group) return false;
+    if (!group) {
+      return false;
+    }
     const index = group.participants.findIndex((p) => p.id === participantId);
-    if (index === -1) return false;
+    if (index === -1) {
+      return false;
+    }
     group.participants.splice(index, 1);
     return true;
   }
