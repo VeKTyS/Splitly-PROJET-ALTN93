@@ -1,0 +1,23 @@
+# Version minimale, volontairement : un seul job, pour observer un échec (étape 1 du TP).
+# Le graphe tests / qualité / image, le cache et les permissions arrivent à l'étape 3.
+name: group-service
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  tests:
+    name: Group tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/group-service
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm test
