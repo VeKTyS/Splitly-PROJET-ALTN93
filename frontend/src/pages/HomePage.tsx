@@ -11,9 +11,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { useState, type FormEvent } from 'react'
+import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ApiError, api } from '../services/api'
+import { api, ApiError } from '../services/api'
 import { localStore } from '../services/storage'
 import type { Group } from '../types'
 
@@ -110,7 +110,11 @@ function CreateGroupForm({ onCreated }: { onCreated: (group: Group) => void }) {
           Créer
         </Button>
       </Stack>
-      {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {error}
+        </Alert>
+      )}
     </Paper>
   )
 }
@@ -127,8 +131,11 @@ function JoinGroupForm({ onFound }: { onFound: (group: Group) => void }) {
     try {
       onFound(await api.findGroupByInviteCode(code))
     } catch (err) {
-      if (err instanceof ApiError && err.status === 404) setError('Aucun groupe ne correspond à ce code.')
-      else setError(err instanceof ApiError ? err.message : 'Une erreur est survenue.')
+      if (err instanceof ApiError && err.status === 404) {
+        setError('Aucun groupe ne correspond à ce code.')
+      } else {
+        setError(err instanceof ApiError ? err.message : 'Une erreur est survenue.')
+      }
       setBusy(false)
     }
   }
@@ -152,7 +159,11 @@ function JoinGroupForm({ onFound }: { onFound: (group: Group) => void }) {
           Rejoindre
         </Button>
       </Stack>
-      {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {error}
+        </Alert>
+      )}
     </Paper>
   )
 }
