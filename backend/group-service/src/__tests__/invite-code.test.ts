@@ -16,7 +16,7 @@ describe('createInviteCodeGenerator', () => {
     const alwaysFirst = createInviteCodeGenerator(() => 0);
     const alwaysLast = createInviteCodeGenerator((max) => max - 1);
 
-    expect(alwaysFirst()).toBe('AAAAAB');
+    expect(alwaysFirst()).toBe('AAAAAA');
     expect(alwaysLast()).toBe('999999');
   });
 });
