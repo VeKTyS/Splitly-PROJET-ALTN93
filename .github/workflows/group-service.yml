@@ -35,7 +35,15 @@ jobs:
           cache: npm
           cache-dependency-path: backend/group-service/package-lock.json
       - run: npm ci
-      - run: npm test
+      # Deux reporters : le log reste lisible, et un rapport JUnit est écrit pour l'artefact.
+      - run: npm test -- --reporter=default --reporter=junit --outputFile.junit=reports/junit.xml
+      # if: always() : le rapport est téléversé même (surtout) quand les tests échouent.
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: group-tests-report
+          path: backend/group-service/reports/
+          retention-days: 7
 
   quality:
     name: Group quality
@@ -55,6 +63,15 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
+      # Rapport oxlint au format Checkstyle (XML), produit même si une étape précédente a échoué.
+      - if: always()
+        run: mkdir -p reports && npx oxlint --format=checkstyle > reports/oxlint-checkstyle.xml || true
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: group-quality-report
+          path: backend/group-service/reports/
+          retention-days: 7
 
   image:
     name: Group Docker image
