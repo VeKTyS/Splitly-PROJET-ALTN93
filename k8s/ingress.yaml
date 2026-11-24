@@ -16,3 +16,10 @@ spec:
                 name: group-service
                 port:
                   number: 8080
+          - path: /api/expenses
+            pathType: Prefix
+            backend:
+              service:
+                name: expense-service
+                port:
+                  number: 8081
