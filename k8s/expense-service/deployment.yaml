@@ -15,13 +15,22 @@ spec:
     spec:
       containers:
         - name: expense-service
-          image: vektys/splitly-expense-service:1.0.0
+          image: vektys/splitly-expense-service:1.1.0
           ports:
             - containerPort: 8081
           env:
             # Le lien entre les services : le nom du Service de group-service, resolu par le DNS du cluster.
             - name: GROUP_SERVICE_URL
               value: http://group-service:8080
+            # Identifiants lus dans le Secret, puis assembles dans l'URL : $(VAR) reprend une variable definie au-dessus.
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef: { name: postgres-secret, key: POSTGRES_USER }
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: postgres-secret, key: POSTGRES_PASSWORD }
+            - name: DATABASE_URL
+              value: postgres://$(DB_USER):$(DB_PASSWORD)@postgres:5432/expenses_db
           # Le pod ne recoit du trafic que quand /health repond.
           readinessProbe:
             httpGet:
