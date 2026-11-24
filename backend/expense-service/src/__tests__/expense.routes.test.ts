@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../app';
 import type { GroupDirectory } from '../clients/group-directory';
 import { GroupServiceUnavailableError } from '../lib/errors';
-import { InMemoryExpenseRepository } from '../repositories/expense.repository';
+import { memoryRepository } from './memory-db';
 import { ExpenseService } from '../services/expense.service';
 
 /** Faux group-service : le groupe 1 contient les participants 10 et 11 ; le groupe 666 simule une panne. */
@@ -27,8 +27,8 @@ const restaurant = {
 describe('API /api/expenses', () => {
   let app: ReturnType<typeof createApp>;
 
-  beforeEach(() => {
-    app = createApp(new ExpenseService(new InMemoryExpenseRepository(), fakeGroups));
+  beforeEach(async () => {
+    app = createApp(new ExpenseService(await memoryRepository(), fakeGroups));
   });
 
   it('POST cree une depense : 201 et en-tete Location', async () => {
