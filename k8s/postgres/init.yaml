@@ -1,0 +1,11 @@
+# Script lance par PostgreSQL a son tout premier demarrage (dossier de donnees vide) :
+# une base par service.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: splitly
+data:
+  init.sql: |
+    CREATE DATABASE groups_db;
+    CREATE DATABASE expenses_db;
