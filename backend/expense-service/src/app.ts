@@ -69,5 +69,8 @@ function sendProblem(
   detail: string,
   extra: Record<string, unknown> = {},
 ) {
-  res.status(status).type('application/problem+json').json({ type: 'about:blank', title, status, detail, ...extra });
+  res
+    .status(status)
+    .type('application/problem+json')
+    .json({ type: 'about:blank', title, status, detail, ...extra });
 }

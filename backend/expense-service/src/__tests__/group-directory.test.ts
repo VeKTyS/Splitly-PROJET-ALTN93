@@ -18,7 +18,16 @@ describe('HttpGroupDirectory', () => {
       requestedUrls.push(req.url ?? '');
       if (req.url === '/api/groups/1') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ id: 1, name: 'Lyon', participants: [{ id: 10, name: 'Alice' }, { id: 11, name: 'Bob' }] }));
+        res.end(
+          JSON.stringify({
+            id: 1,
+            name: 'Lyon',
+            participants: [
+              { id: 10, name: 'Alice' },
+              { id: 11, name: 'Bob' },
+            ],
+          }),
+        );
       } else if (req.url === '/api/groups/500') {
         res.writeHead(500).end();
       } else {

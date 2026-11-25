@@ -21,9 +21,7 @@ export class ExpenseService {
     }
     const outsiders = expense.beneficiaryIds.filter((id) => !members.has(id));
     if (outsiders.length > 0) {
-      throw new RuleViolationError(
-        `Beneficiaire(s) ${outsiders.join(', ')} hors du groupe ${expense.groupId}`,
-      );
+      throw new RuleViolationError(`Beneficiaire(s) ${outsiders.join(', ')} hors du groupe ${expense.groupId}`);
     }
 
     return this.repository.create(expense);
