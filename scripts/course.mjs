@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const GROUP_SERVICE = join(ROOT, 'backend', 'group-service');
+const EXPENSE_SERVICE = join(ROOT, 'backend', 'expense-service');
 const FRONTEND = join(ROOT, 'frontend');
 const WORKFLOWS = join(ROOT, '.github', 'workflows');
 const COMPOSE_FILE = join(ROOT, 'docker-compose.yml');
@@ -39,12 +40,17 @@ function testGroup() {
   run([...npmCommand(), 'test'], { cwd: GROUP_SERVICE });
 }
 
+function testExpense() {
+  run([...npmCommand(), 'test'], { cwd: EXPENSE_SERVICE });
+}
+
 function testFront() {
   run([...npmCommand(), 'test'], { cwd: FRONTEND });
 }
 
 function test() {
   testGroup();
+  testExpense();
   testFront();
 }
 
@@ -60,12 +66,17 @@ function lintGroup() {
   lintApp(GROUP_SERVICE);
 }
 
+function lintExpense() {
+  lintApp(EXPENSE_SERVICE);
+}
+
 function lintFront() {
   lintApp(FRONTEND);
 }
 
 function lint() {
   lintGroup();
+  lintExpense();
   lintFront();
 }
 
@@ -212,9 +223,11 @@ const COMMANDS = {
   prerequisites,
   test,
   'test-group': testGroup,
+  'test-expense': testExpense,
   'test-front': testFront,
   lint,
   'lint-group': lintGroup,
+  'lint-expense': lintExpense,
   'lint-front': lintFront,
   'supply-chain-policy': supplyChainPolicy,
   verify,
