@@ -87,10 +87,19 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+      - id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: backend/expense-service
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: |
             ${{ env.IMAGE }}:${{ github.sha }}
             ${{ env.IMAGE }}:latest
+      # SBOM de l'image publiée, sur le digest renvoye par Buildx (jamais sur un tag).
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: anchore/sbom-action@dfcb83b97731532d72be422cbc51ee64adb6fd56 # v0.24.4
+        with:
+          image: docker.io/vektys/splitly-expense-service@${{ steps.build.outputs.digest }}
+          format: spdx-json
+          artifact-name: expense-service.spdx.json
+          upload-artifact-retention: 7
