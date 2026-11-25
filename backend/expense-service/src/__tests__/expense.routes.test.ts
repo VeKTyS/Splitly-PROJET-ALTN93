@@ -9,7 +9,9 @@ import { ExpenseService } from '../services/expense.service';
 /** Faux group-service : le groupe 1 contient les participants 10 et 11 ; le groupe 666 simule une panne. */
 const fakeGroups: GroupDirectory = {
   async getParticipantIds(groupId) {
-    if (groupId === 666) throw new GroupServiceUnavailableError();
+    if (groupId === 666) {
+      throw new GroupServiceUnavailableError();
+    }
     return groupId === 1 ? [10, 11] : null;
   },
 };
@@ -56,25 +58,34 @@ describe('API /api/expenses', () => {
     ['date mal formee', { date: '20/11/2026' }],
     ['categorie inconnue', { category: 'casino' }],
   ])('POST refuse avec 400 : %s', async (_cas, override) => {
-    const res = await request(app).post('/api/expenses').send({ ...restaurant, ...override });
+    const res = await request(app)
+      .post('/api/expenses')
+      .send({ ...restaurant, ...override });
 
     expect(res.status).toBe(400);
     expect(res.headers['content-type']).toContain('application/problem+json');
   });
 
   it('RG3 : payeur hors du groupe -> 409', async () => {
-    const res = await request(app).post('/api/expenses').send({ ...restaurant, payerId: 99 });
+    const res = await request(app)
+      .post('/api/expenses')
+      .send({ ...restaurant, payerId: 99 });
 
     expect(res.status).toBe(409);
     expect(res.body.detail).toContain('ne fait pas partie du groupe');
   });
 
   it('groupe inexistant -> 404', async () => {
-    await request(app).post('/api/expenses').send({ ...restaurant, groupId: 2 }).expect(404);
+    await request(app)
+      .post('/api/expenses')
+      .send({ ...restaurant, groupId: 2 })
+      .expect(404);
   });
 
   it('group-service en panne -> 503, sans detail technique', async () => {
-    const res = await request(app).post('/api/expenses').send({ ...restaurant, groupId: 666 });
+    const res = await request(app)
+      .post('/api/expenses')
+      .send({ ...restaurant, groupId: 666 });
 
     expect(res.status).toBe(503);
     expect(res.body.detail).toBe('Impossible de verifier le groupe pour le moment');

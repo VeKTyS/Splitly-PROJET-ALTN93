@@ -24,8 +24,12 @@ export class HttpGroupDirectory implements GroupDirectory {
       throw new GroupServiceUnavailableError();
     }
 
-    if (res.status === 404) return null;
-    if (!res.ok) throw new GroupServiceUnavailableError();
+    if (res.status === 404) {
+      return null;
+    }
+    if (!res.ok) {
+      throw new GroupServiceUnavailableError();
+    }
 
     const group = (await res.json()) as { participants: { id: number }[] };
     return group.participants.map((p) => p.id);

@@ -1,0 +1,13 @@
+# Mises à jour des références épinglées, proposées dans des PR ordinaires.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directories:
+      - /backend/group-service
+      - /backend/expense-service
+    schedule:
+      interval: weekly

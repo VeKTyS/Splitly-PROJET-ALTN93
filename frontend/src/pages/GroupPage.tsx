@@ -18,18 +18,15 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { useEffect, useState, type FormEvent } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Expenses from '../components/Expenses'
-import { ApiError, api } from '../services/api'
+import { api, ApiError } from '../services/api'
 import { localStore } from '../services/storage'
 import type { Group, Participant } from '../types'
 
 type LoadState =
-  | { kind: 'loading' }
-  | { kind: 'missing' }
-  | { kind: 'error'; message: string }
-  | { kind: 'ready'; group: Group }
+  { kind: 'loading' } | { kind: 'missing' } | { kind: 'error'; message: string } | { kind: 'ready'; group: Group }
 
 export default function GroupPage() {
   const groupId = Number(useParams().id)
@@ -45,14 +42,21 @@ function GroupLoader({ groupId }: { groupId: number }) {
     api
       .getGroup(groupId)
       .then((group) => {
-        if (cancelled) return
+        if (cancelled) {
+          return
+        }
         localStore.rememberGroup(group) // un lien ouvert directement ajoute aussi le groupe a « Mes groupes »
         setState({ kind: 'ready', group })
       })
       .catch((err) => {
-        if (cancelled) return
-        if (err instanceof ApiError && err.status === 404) setState({ kind: 'missing' })
-        else setState({ kind: 'error', message: err instanceof ApiError ? err.message : 'Une erreur est survenue.' })
+        if (cancelled) {
+          return
+        }
+        if (err instanceof ApiError && err.status === 404) {
+          setState({ kind: 'missing' })
+        } else {
+          setState({ kind: 'error', message: err instanceof ApiError ? err.message : 'Une erreur est survenue.' })
+        }
       })
     return () => {
       cancelled = true
@@ -66,8 +70,12 @@ function GroupLoader({ groupId }: { groupId: number }) {
       </Box>
     )
   }
-  if (state.kind === 'missing') return <MissingGroup groupId={groupId} />
-  if (state.kind === 'error') return <Alert severity="error">{state.message}</Alert>
+  if (state.kind === 'missing') {
+    return <MissingGroup groupId={groupId} />
+  }
+  if (state.kind === 'error') {
+    return <Alert severity="error">{state.message}</Alert>
+  }
   return <GroupView group={state.group} onChange={(group) => setState({ kind: 'ready', group })} />
 }
 
@@ -165,7 +173,9 @@ function GroupView({ group, onChange }: { group: Group; onChange: (group: Group)
         me={me}
         onAdded={(p) => onChange({ ...group, participants: [...group.participants, p] })}
         onRemoved={(id) => {
-          if (id === me) chooseMe(null)
+          if (id === me) {
+            chooseMe(null)
+          }
           onChange({ ...group, participants: group.participants.filter((p) => p.id !== id) })
         }}
       />
@@ -219,8 +229,11 @@ function Participants({
       onRemoved(p.id)
     } catch (err) {
       // 404 : deja supprime ailleurs, on aligne simplement l'affichage.
-      if (err instanceof ApiError && err.status === 404) onRemoved(p.id)
-      else setError(err instanceof ApiError ? err.message : 'Une erreur est survenue.')
+      if (err instanceof ApiError && err.status === 404) {
+        onRemoved(p.id)
+      } else {
+        setError(err instanceof ApiError ? err.message : 'Une erreur est survenue.')
+      }
     }
   }
 
@@ -267,7 +280,11 @@ function Participants({
           Ajouter
         </Button>
       </Stack>
-      {error && <Alert severity="error" sx={{ mt: 1.5 }}>{error}</Alert>}
+      {error && (
+        <Alert severity="error" sx={{ mt: 1.5 }}>
+          {error}
+        </Alert>
+      )}
     </Paper>
   )
 }
