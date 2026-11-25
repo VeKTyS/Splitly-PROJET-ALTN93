@@ -20,7 +20,8 @@ import {
 } from '@mui/material'
 import { type FormEvent, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { api, ApiError } from '../services/api'
+import Expenses from '../components/Expenses'
+import { ApiError, api } from '../services/api'
 import { localStore } from '../services/storage'
 import type { Group, Participant } from '../types'
 
@@ -178,6 +179,8 @@ function GroupView({ group, onChange }: { group: Group; onChange: (group: Group)
           onChange({ ...group, participants: group.participants.filter((p) => p.id !== id) })
         }}
       />
+
+      <Expenses group={group} me={me} />
 
       <Snackbar
         open={copied}

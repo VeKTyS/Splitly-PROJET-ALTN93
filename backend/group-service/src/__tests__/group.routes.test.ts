@@ -2,7 +2,7 @@ import request from 'supertest';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createApp } from '../app';
 import { createInviteCodeGenerator } from '../lib/invite-code';
-import { InMemoryGroupRepository } from '../repositories/group.repository';
+import { memoryRepository } from './memory-db';
 import { GroupService } from '../services/group.service';
 
 /**
@@ -12,8 +12,8 @@ import { GroupService } from '../services/group.service';
 describe('API /api/groups', () => {
   let app: ReturnType<typeof createApp>;
 
-  beforeEach(() => {
-    app = createApp(new GroupService(new InMemoryGroupRepository(), createInviteCodeGenerator()));
+  beforeEach(async () => {
+    app = createApp(new GroupService(await memoryRepository(), createInviteCodeGenerator()));
   });
 
   async function createGroup(name: string, currency?: string) {
