@@ -119,6 +119,7 @@ jobs:
       contents: read
       id-token: write # jeton OIDC du workflow : identité pour Cosign et actions/attest
       attestations: write # enregistrer les attestations côté GitHub
+      security-events: write # téléverser le rapport SARIF de Trivy
     env:
       IMAGE_NAME: docker.io/vektys/splitly-expense-service
       DIGEST: ${{ needs.image.outputs.digest }}
@@ -148,3 +149,27 @@ jobs:
           sbom-path: expense-service.spdx.json
           push-to-registry: true
           create-storage-record: false
+      # Le workflow vérifie sa propre sortie avant de scanner : signature et attestations de ce digest précis.
+      - env:
+          CERT_IDENTITY: ${{ github.server_url }}/${{ github.workflow_ref }}
+        run: |
+          cosign verify \
+            --certificate-identity "$CERT_IDENTITY" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            "$IMAGE_NAME@$DIGEST"
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh attestation verify "oci://$IMAGE_NAME@$DIGEST" --repo "${{ github.repository }}"
+          gh attestation verify "oci://$IMAGE_NAME@$DIGEST" --repo "${{ github.repository }}" \
+            --predicate-type https://spdx.dev/Document/v2.3
+      # Scan du même digest que celui signé et attesté, jamais d'un tag.
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}@${{ env.DIGEST }}
+          format: sarif
+          output: trivy-expense-service.sarif
+      - uses: github/codeql-action/upload-sarif@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
+        with:
+          sarif_file: trivy-expense-service.sarif
+          category: expense-service
