@@ -9,7 +9,10 @@
     "lint": "oxlint --deny-warnings",
     "preview": "vite preview",
     "test": "vitest run",
-    "dev:local": "vite --mode local"
+    "dev:local": "vite --mode local",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -18,8 +18,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
-import { useEffect, useState, type FormEvent } from 'react'
-import { ApiError, api } from '../services/api'
+import { type FormEvent, useEffect, useState } from 'react'
+import { api, ApiError } from '../services/api'
 import { formatCents, formatShortDate, parseAmountToCents, todayLocal } from '../services/money'
 import { CATEGORIES, type Category, type Expense, type Group } from '../types'
 
@@ -38,7 +38,9 @@ export default function Expenses({ group, me }: { group: Group; me: number | nul
     api
       .listExpenses(group.id)
       .then((list) => {
-        if (!cancelled) setExpenses(list)
+        if (!cancelled) {
+          setExpenses(list)
+        }
       })
       .catch((err) => {
         if (!cancelled) {

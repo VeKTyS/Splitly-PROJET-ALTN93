@@ -21,7 +21,7 @@ import {
 import { type FormEvent, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Expenses from '../components/Expenses'
-import { ApiError, api } from '../services/api'
+import { api, ApiError } from '../services/api'
 import { localStore } from '../services/storage'
 import type { Group, Participant } from '../types'
 
