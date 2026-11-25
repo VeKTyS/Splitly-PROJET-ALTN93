@@ -96,7 +96,8 @@ function supplyChainPolicy() {
     readFileSync(workflow, 'utf8')
       .split(/\r?\n/)
       .forEach((line, index) => {
-        const stripped = line.trim();
+        // Une étape s'écrit « uses: … » ou « - uses: … » : le tiret de liste YAML est optionnel.
+        const stripped = line.trim().replace(/^-\s*/, '');
         if (!stripped.startsWith('uses:')) return;
         const reference = stripped.slice('uses:'.length).split('#')[0].trim();
         if (reference.startsWith('./')) return;
@@ -107,7 +108,9 @@ function supplyChainPolicy() {
       });
   }
 
-  const dockerfiles = [GROUP_SERVICE, FRONTEND].map((app) => join(app, 'Dockerfile')).filter(existsSync);
+  const dockerfiles = [GROUP_SERVICE, EXPENSE_SERVICE, FRONTEND]
+    .map((app) => join(app, 'Dockerfile'))
+    .filter(existsSync);
   for (const dockerfile of dockerfiles) {
     readFileSync(dockerfile, 'utf8')
       .split(/\r?\n/)
